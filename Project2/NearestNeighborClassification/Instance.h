@@ -27,7 +27,7 @@ class Instance {
             return features.at(0);
         }
         void print() const{
-            for (int i = 0 ; i < features.size(); i++) {
+            for (unsigned i = 0 ; i < features.size(); i++) {
                 cout << features.at(i) << " ";
             } cout << endl;
         }

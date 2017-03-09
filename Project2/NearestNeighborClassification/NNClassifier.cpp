@@ -2,7 +2,7 @@
 #include <iostream>
 #include "NNClassifier.h"
 
-float NNClassifier::classify(const vector<Instance> &training, const Instance &newData,const vector<int> &subset) {
+float NNClassifier::classify(const vector<Instance> &training, const Instance &newData,const vector<int> &subset) const {
     if (training.empty()) {
         cout << "This training set is empty" << endl;
         return -1;
@@ -34,7 +34,7 @@ float NNClassifier::classify(const vector<Instance> &training, const Instance &n
 }
 
 // Euclidean
-float NNClassifier::dist(const Instance &i1, const Instance &i2, const vector<int> &subset) {
+float NNClassifier::dist(const Instance &i1, const Instance &i2, const vector<int> &subset) const {
     // if same number of features, go ahead
     float sum = 0.0;
     unsigned i;

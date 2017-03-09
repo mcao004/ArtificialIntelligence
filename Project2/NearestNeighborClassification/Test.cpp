@@ -2,6 +2,7 @@
 #include <ctime>
 #include <cstdlib>
 
+#include "LOOValidator.h"
 #include "NNClassifier.h"
 #include "dataReader.h"
 
@@ -113,7 +114,7 @@ float rando() {
 
 void test4() {
     cout << endl;
-    cout << "Small Dataset test" << endl;
+    cout << "Small Dataset test for classifier" << endl;
     
     string inputfilename = "Datasets/cs_170_small80.txt";
     
@@ -131,7 +132,7 @@ void test4() {
     subset.push_back(3);
 
     float correct = 0.0; // stores how many we got correct 
-    for (int i = 0; i < allData.size(); i++) {
+    for (unsigned i = 0; i < allData.size(); i++) {
         //cout << i << endl;
         vector<Instance>::iterator it;
         
@@ -158,7 +159,7 @@ void test4() {
 
 void test5() {
     cout << endl;
-    cout << "Large Dataset test" << endl;
+    cout << "Large Dataset test for classifier" << endl;
     
     string inputfilename = "Datasets/cs_170_large80.txt";
     
@@ -177,7 +178,7 @@ void test5() {
     subset.push_back(1);
 
     float correct = 0.0; // stores how many we got correct 
-    for (int i = 0; i < allData.size(); i++) {
+    for (unsigned i = 0; i < allData.size(); i++) {
         //cout << i << endl;
         vector<Instance>::iterator it = allData.begin();
         
@@ -202,14 +203,44 @@ void test5() {
 
 }
 
+void test6() {
+    cout << "Validator Test" << endl;
+
+    string filename = "Datasets/cs_170_large80.txt";
+    float accuracy = 0;
+    dataReader dr(filename);
+    
+    // initialize the data
+    vector<Instance> data = dr.read();
+    NNClassifier nnc;
+    // make arbitrary subset
+    vector<int> subset;
+    subset.push_back(1);
+    subset.push_back(15);
+    subset.push_back(27);
+
+
+    // make a leave-one-out validator and pass into it all of the data, a classifier and the subset
+    LOOValidator lv;
+
+    accuracy = lv.validate(data, nnc, subset);
+    cout << "Accuracy: " << accuracy << endl;
+}
+
+void test7() {
+    cout << "Forward Selection test" << endl;
+
+}
+
 int main() {
     //srand(static_cast <unsigned> (time(0)));
     
     //test1();
     //test2();
     //test3();
-    test4();
-    test5();
+    //test4();
+    //test5();
+    test6();
 
     return 0;
 }
