@@ -2,15 +2,15 @@
 #include <iostream>
 #include "NNClassifier.h"
 
-float NNClassifier::classify(const vector<Instance> &training, const Instance &newData,const vector<int> &subset) const {
+double NNClassifier::classify(const vector<Instance> &training, const Instance &newData,const vector<int> &subset) const {
     if (training.empty()) {
         cout << "This training set is empty" << endl;
         return -1;
     }
     unsigned i = 0;
-    float closestDist = FLT_MAX;
-    float d = FLT_MAX;
-    // only have this in case I want it to return the closest Instance
+    double closestDist = DBL_MAX;
+    double d = DBL_MAX;
+    // I only have this in case I want it to return the closest Instance
     unsigned closestInstance = -1;
     
     for (i = 0; i < training.size(); i++) {
@@ -21,6 +21,7 @@ float NNClassifier::classify(const vector<Instance> &training, const Instance &n
             closestDist = d;
             closestInstance = i;
         }
+        //cout << d << " far away" << endl;
         // d = 0; // don't really need
     }
 
@@ -34,14 +35,14 @@ float NNClassifier::classify(const vector<Instance> &training, const Instance &n
 }
 
 // Euclidean
-float NNClassifier::dist(const Instance &i1, const Instance &i2, const vector<int> &subset) const {
+double NNClassifier::dist(const Instance &i1, const Instance &i2, const vector<int> &subset) const {
     // if same number of features, go ahead
-    float sum = 0.0;
+    double sum = 0.0;
     unsigned i;
     for(i = 0; i < subset.size(); i++) {
         // (x1 - x2)^2
         sum += (i1.at(subset.at(i)) - i2.at(subset.at(i))) * (i1.at(subset.at(i)) - i2.at(subset.at(i)));
     }
-    return sqrt(sum);
+    return sum;//sqrt(sum);
 }
 

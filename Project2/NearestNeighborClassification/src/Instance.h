@@ -10,17 +10,17 @@ using namespace std;
 // features {1,3,5} can be held at features.at(0, 1 , or 2)
 class Instance {
     private:
-        vector<float> features;
+        vector<double> features;
     public: 
         // instance with single double of value 0 (class 0)
         Instance() :features(1,0) {}
-        Instance(vector<float> features)
+        Instance(vector<double> features)
             :features(features) {}
         // returns the number of features this instance has
         unsigned numFeatures() const {
             return features.size();
         }
-        float at(unsigned i) const {
+        double at(unsigned i) const {
             return features.at(i);
         }
         int getClass() const{

@@ -3,8 +3,9 @@
 
 // takes in training data, feature subset, and the classifier
 // returns accuracy
-double LOOValidator::validate(vector<Instance> & training, const NNClassifier &nnc, const vector<int> & subset) {
-    float correct = 0.0;
+double LOOValidator::validate(vector<Instance> & training, const NNClassifier &nnc, const vector<int> & subset) const {
+    double correct = 0.0;
+    // loop to leave one out and classify
     for (unsigned i = 0; i < training.size(); i++) {
         vector<Instance>::iterator it = training.begin();
 
@@ -14,7 +15,7 @@ double LOOValidator::validate(vector<Instance> & training, const NNClassifier &n
         it = training.erase(it);
 
         // use the rest of the data to classify this instance
-        float classType = nnc.classify(training, currentInst, subset);
+        double classType = nnc.classify(training, currentInst, subset);
         
         if (classType == currentInst.getClass()) {
             correct++;
@@ -22,6 +23,7 @@ double LOOValidator::validate(vector<Instance> & training, const NNClassifier &n
 
         it = training.insert(it, currentInst);
     }
-    cout << "Number of Correct Classifications: " << correct << " out of " << training.size()-1 << endl;
-    return correct/(training.size()-1);
+    //cout << "Number of Correct Classifications: " << correct << " out of " << training.size() << endl;
+    correct /= training.size();
+    return correct;
 }

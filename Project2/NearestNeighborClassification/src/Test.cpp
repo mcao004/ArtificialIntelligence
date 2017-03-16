@@ -1,6 +1,7 @@
 
 #include <ctime>
 #include <cstdlib>
+#include <iomanip>
 
 #include "LOOValidator.h"
 #include "NNClassifier.h"
@@ -8,10 +9,10 @@
 
 using namespace std;
 
-float LO = -256;
-float HI = 256;
+double LO = -256;
+double HI = 256;
 
-float rando();
+double rando();
 
 void printInstance(Instance i) {
     cout << "Instance" << endl;
@@ -22,13 +23,18 @@ void printInstance(Instance i) {
     }
     cout << endl;
     cout << "End Instance" << endl;
-}   
+} 
+
+
+void printSubset(vector<int> subset);
+void ForwardSelection(vector<Instance> &data, const NNClassifier &nnc, const LOOValidator &lv);
+void BackwardsElimination(vector<Instance> &data, const NNClassifier &nnc, const LOOValidator &lv);
 
 void test1() {
     cout << "Test 1" << endl;
     NNClassifier nnc;
     vector<Instance> v;
-    vector<float> features;
+    vector<double> features;
     vector<int> subset;
 
     subset.push_back(1);
@@ -57,7 +63,7 @@ void test2() {
     cout << "Test 2" << endl;
     NNClassifier nnc;
     vector<Instance> v;
-    vector<float> features;
+    vector<double> features;
     vector<int> subset;
 
     subset.push_back(1);
@@ -84,7 +90,7 @@ void test3() {
     cout << "Test 3" << endl;
     NNClassifier nnc;
     vector<Instance> v;
-    vector<float> features;
+    vector<double> features;
     vector<int> subset;
 
     subset.push_back(1);
@@ -108,8 +114,8 @@ void test3() {
     cout << endl;
 }
 
-float rando() {
-    return LO + static_cast <float> ( rand()) / (static_cast <float> (RAND_MAX/(HI-LO)));
+double rando() {
+    return LO + static_cast <double> ( rand()) / (static_cast <double> (RAND_MAX/(HI-LO)));
 }
 
 void test4() {
@@ -131,7 +137,7 @@ void test4() {
     subset.push_back(5);
     subset.push_back(3);
 
-    float correct = 0.0; // stores how many we got correct 
+    double correct = 0.0; // stores how many we got correct 
     for (unsigned i = 0; i < allData.size(); i++) {
         //cout << i << endl;
         vector<Instance>::iterator it;
@@ -142,7 +148,7 @@ void test4() {
         it = allData.erase(it);
         
         // use the copy as training data, and currentInst as the newData to compare it to
-        float classType = nnc.classify(allData, currentInst, subset);
+        double classType = nnc.classify(allData, currentInst, subset);
 
         if (classType == currentInst.getClass()) {
             correct++;
@@ -154,7 +160,7 @@ void test4() {
     cout << "Number of Correct Classifications: " << correct << endl;
     correct /= (allData.size()-1); // since not compared to itself
     cout << "Accuracy: " << correct << endl;
-
+    
 }
 
 void test5() {
@@ -177,7 +183,7 @@ void test5() {
     subset.push_back(15);
     subset.push_back(1);
 
-    float correct = 0.0; // stores how many we got correct 
+    double correct = 0.0; // stores how many we got correct 
     for (unsigned i = 0; i < allData.size(); i++) {
         //cout << i << endl;
         vector<Instance>::iterator it = allData.begin();
@@ -188,7 +194,7 @@ void test5() {
         it = allData.erase(it);
         
         // use the copy as training data, and currentInst as the newData to compare it to
-        float classType = nnc.classify(allData, currentInst, subset);
+        double classType = nnc.classify(allData, currentInst, subset);
 
         if (classType == currentInst.getClass()) {
             correct++;
@@ -207,7 +213,7 @@ void test6() {
     cout << "Validator Test" << endl;
 
     string filename = "Datasets/cs_170_large80.txt";
-    float accuracy = 0;
+    double accuracy = 0;
     dataReader dr(filename);
     
     // initialize the data
@@ -215,9 +221,12 @@ void test6() {
     NNClassifier nnc;
     // make arbitrary subset
     vector<int> subset;
-    subset.push_back(1);
-    subset.push_back(15);
-    subset.push_back(27);
+    //subset.push_back(1);
+    //subset.push_back(15);
+    //subset.push_back(27);
+    for (unsigned i = 1; i < 40; i++) {
+        subset.push_back(i);
+    }
 
 
     // make a leave-one-out validator and pass into it all of the data, a classifier and the subset
@@ -230,17 +239,81 @@ void test6() {
 void test7() {
     cout << "Forward Selection test" << endl;
 
+    string filename = "Datasets/cs_170_small80.txt";
+    dataReader dr(filename);
+    vector<Instance> data = dr.read();
+    NNClassifier nnc;
+    LOOValidator lv;
+    
+    ForwardSelection(data, nnc, lv);
+}
+
+void test8() {
+    cout << "Backwards Elimination test" << endl;
+
+    string filename = "Datasets/cs_170_small80.txt";
+    dataReader dr(filename);
+    vector<Instance> data = dr.read();
+    NNClassifier nnc;
+    LOOValidator lv;
+    
+    BackwardsElimination(data, nnc, lv);
+
 }
 
 int main() {
     //srand(static_cast <unsigned> (time(0)));
     
+    cout << "Pick a test(number): " << endl;
+    cout << "\t1) Nearest Neighbor Classifier Test with features obj1{1,12,5} and obj2{2,0,0}" << endl;
+    cout << "\t2) Nearest Neighbor Classifier Test with features obj{1,-90,42} and obj2{2,777,164}" << endl;
+    cout << "\t3) Nearest Neighbor Classifier Test with features obj1{random, random} and obj2{random, random}" << endl;
+    cout << "\t4) Validator Prototype with feature subset{3,5,7} on small dataset80" << endl;
+    cout << "\t5) Validator Prototype with feature subset{1,15,27} on large dataset80" << endl;
+    cout << "\t6) Validator Test with {1,15,27} on large80" << endl;
+    cout << "\t7) Forward Selection Test on small80" << endl;
+    cout << "\t8) Backwards Elimination Test with small80" << endl;
+    int input;
+    cin >> input;
+
+    switch(input){
+        case 1:
+            test1();
+            break;
+        case 2:
+            test2();
+            break;
+        case 3:
+            test3();
+            break;
+        case 4:
+            test4();
+            break;
+        case 5:
+            test5();
+            break;
+        case 6:
+            test6();
+            break;
+        case 7:
+            test7();
+            break;
+        case 8:
+            test8();
+            break;
+        default:
+            cout << "Invalid. Proceeding with default: 8)" << endl;
+            test8();
+            break;
+    }
     //test1();
     //test2();
     //test3();
     //test4();
     //test5();
-    test6();
+    //test6();
+    //test7();
+    test8();
 
     return 0;
 }

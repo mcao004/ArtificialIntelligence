@@ -15,15 +15,18 @@ dataReader::~dataReader() {
 Instance dataReader::lineToItem(string s) {
     stringstream ss(s);
     
-    cout.precision(10);
+    cout.precision(8);
     string singlef; // single feature/current feature
-    vector<float> features;
+    vector<double> features;
     features.clear();
+    //cout << s << endl;
     while(ss >> singlef) { // for each input
         // singlef has #.#######e+-###
         // for now do not normalize,
+        //double temp = atof(singlef.substr(0,singlef.find('e')).c_str());
         features.push_back(atof(singlef.substr(0,singlef.find('e')).c_str())); // substring from start to e
-        // cout << features.at(features.size()-1) << " ";
+        //cout << temp << " ";
+        //cout << features.at(features.size()-1) << " ";
         // actually I'll try to normalize
         //float exponent = atoi(singlef.substr(singlef.find('e')+1).c_str());
         //features.at(features.size()-1) *= (float)pow((float)10.0,exponent);
@@ -40,7 +43,7 @@ vector<Instance> dataReader::read() {
     char input[4096];
     while(!inputstream.eof()) {
         inputstream.getline(input,4096);
-        //cout << "Stored in " << i << ": " << input << endl;
+        //cout << "Stored in " << i << ": ";// << input << endl;
         result.at(i) = lineToItem(input);
         i++;
         //result.push_back(lineToItem(input));

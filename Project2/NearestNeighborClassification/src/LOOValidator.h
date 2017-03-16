@@ -10,6 +10,6 @@
 // only has one function
 class LOOValidator{
     public:
-        double validate(vector<Instance> & training,const NNClassifier &nnc,const vector<int> &subset);        
+        double validate(vector<Instance> & training,const NNClassifier &nnc,const vector<int> &subset) const;        
 };    
 #endif
